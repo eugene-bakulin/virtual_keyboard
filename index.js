@@ -554,16 +554,20 @@ class VirtualKeyboard { // опишем класс виртуальной кла
 
         </div>
 
-    </div>`;
-    
-    this.headInner = `<meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RSS Virtual Keyboard</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="index.css">`;
+        <div class="comments">
+            <div>Комбинация для переключения языка: Ctrl + Alt</div>
+            <div>Клавиатура создана в ОС Windows</div>
+        </div>
 
+        </div>`;
+    
+        this.headInner = `<meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>RSS Virtual Keyboard</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="index.css">`;
     }
 
     releaseVK() { // добавление клавиатуры в документ
@@ -797,54 +801,77 @@ window.onload = function () { // будет работать после загр
             event.preventDefault();
             insertText("\t");
         }
-        if (event.key === "Alt") {
+        if (event.altKey) {
             event.preventDefault();
         }
     });
 
-    document.addEventListener("keydown", (event) => { // слушатель на переключение языка       
-        if (event.ctrlKey && event.altKey) {
-            if (langSwitch["lang"] === "en") {  // если язык уже установлен
-                Object.defineProperty(langSwitch, "lang", {value: "ru"}); // изменяем значение ключа в localStorage
+    function languageSwitcher() {   // функция по переключению языка
+        if (langSwitch["lang"] === "en") {  // если язык уже установлен
+            Object.defineProperty(langSwitch, "lang", {value: "ru"}); // изменяем значение ключа в localStorage
+            for (let i=0; i < keyb.keyObj.length; i ++) {
+                ALL_BUTTONS[i].innerHTML = keyb.keyObj[i]["ru"];    // заполняем клавиши содержимым с нужным языком
+            }
+            if (capsLockIsOn === true) {
+                [...LETTER_BUTTONS].forEach( a => { // и повышаем у буквенных значений регистр, если caps включен
+                    a.innerText = keyb.capitalize(a);
+                });
+            }
+        } else  if (langSwitch["lang"] === "ru") {  // если язык уже установлен
+            Object.defineProperty(langSwitch, "lang", {value: "en"}); // изменяем значение ключа в localStorage
+            for (let i=0; i < keyb.keyObj.length; i ++) {
+                ALL_BUTTONS[i].innerHTML = keyb.keyObj[i]["en"];    // заполняем клавиши содержимым с нужным языком
+            }
+            if (capsLockIsOn === true) {
+                [...LETTER_BUTTONS].forEach( a => { // и повышаем у буквенных значений регистр, если caps включен
+                    a.innerText = keyb.capitalize(a);
+                });
+            }
+        } else {                                  // если язык не установлен, то пляшем от информации в lang html
+            if (document.documentElement.lang === "en") {
+                langSwitch.setItem("lang", "ru"); // добавляем в storage объект, содержащий информацию о раскладке
                 for (let i=0; i < keyb.keyObj.length; i ++) {
-                    ALL_BUTTONS[i].innerHTML = keyb.keyObj[i]["ru"];    // заполняем клавиши содержимым с нужным языком
+                        ALL_BUTTONS[i].innerHTML = keyb.keyObj[i]["ru"];    // заполняем клавиши содержимым с нужным языком
                 }
-            } else  if (langSwitch["lang"] === "ru") {  // если язык уже установлен
-                Object.defineProperty(langSwitch, "lang", {value: "en"}); // изменяем значение ключа в localStorage
+                if (capsLockIsOn === true) {
+                    [...LETTER_BUTTONS].forEach( a => { // и повышаем у буквенных значений регистр, если caps включен
+                        a.innerText = keyb.capitalize(a);
+                    });
+                }
+            } else if (document.documentElement.lang === "ru") {
+                langSwitch.setItem("lang", "en"); // добавляем в storage объект, содержащий информацию о раскладке
                 for (let i=0; i < keyb.keyObj.length; i ++) {
-                    ALL_BUTTONS[i].innerHTML = keyb.keyObj[i]["en"];    // заполняем клавиши содержимым с нужным языком
+                        ALL_BUTTONS[i].innerHTML = keyb.keyObj[i]["en"];    // заполняем клавиши содержимым с нужным языком
                 }
-            } else {                                  // если язык не установлен, то пляшем от информации в lang html
-                if (document.documentElement.lang === "en") {
-                    langSwitch.setItem("lang", "ru"); // добавляем в storage объект, содержащий информацию о раскладке
-                    for (let i=0; i < keyb.keyObj.length; i ++) {
-                         ALL_BUTTONS[i].innerHTML = keyb.keyObj[i]["ru"];    // заполняем клавиши содержимым с нужным языком
-                    }
-                } else if (document.documentElement.lang === "ru") {
-                    langSwitch.setItem("lang", "en"); // добавляем в storage объект, содержащий информацию о раскладке
-                    for (let i=0; i < keyb.keyObj.length; i ++) {
-                         ALL_BUTTONS[i].innerHTML = keyb.keyObj[i]["en"];    // заполняем клавиши содержимым с нужным языком
-                    }
+                if (capsLockIsOn === true) {
+                    [...LETTER_BUTTONS].forEach( a => { // и повышаем у буквенных значений регистр, если caps включен
+                        a.innerText = keyb.capitalize(a);
+                    });
                 }
             }
+        }      
+    }
+
+    document.addEventListener("keydown", (event) => { // слушатель на переключение языка
+        if ((event.ctrlKey) && (event.altKey)) {
+            languageSwitcher();
         }
     });
-        
-    document.addEventListener ("keydown", event => {    // обработчик для анимации нажатия физических клавиш на виртуальной клавиатуре
-        let index;
-        for (let i = 0; i < keyb.keyObj.length; i ++) { // ищем по key code объект в массиве объектов для клавиш, из которого делали заполнение "значений" клавиш...
-            if (keyb.keyObj[i]["code"] == event.code) {
-                index = i;                              // ...запоминаем индекс в массиве объектов...
-                break;
+
+    document.addEventListener('keydown', (event) => {  // эмуляция нажатия клавиш
+        for (let i = 0; i < keyb.keyObj.length; i++) {
+            if (keyb.keyObj[i]['code'] === event.code) {
+                ALL_BUTTONS[i].classList.add("pushed");
             }
-        }
-        //ALL_BUTTONS[index].classList.add("hovered");    
-        ALL_BUTTONS[index].classList.add("pushed");         // ...и подсвечиваем нужную
-        document.addEventListener("keyup", () => {
-            ALL_BUTTONS[index].classList.remove("pushed");  // при keyup убираем подсветку
-        //    ALL_BUTTONS[index].classList.remove("hovered");
+        }    
+        document.addEventListener('keyup', (event) => {  // эмуляция отжатия клавиш
+            for (let i = 0; i < keyb.keyObj.length; i++) {
+                if (keyb.keyObj[i]['code'] === event.code) { 
+                    ALL_BUTTONS[i].classList.remove("pushed");
+                }
+            }
         })
-    });
+    })
 
     document.addEventListener ("keydown", event => {    // слушатель для нажатия Caps на физической клавиатуре
         if (event.code === "CapsLock") {
@@ -913,6 +940,36 @@ window.onload = function () { // будет работать после загр
         }
     })
 
-    
+    document.addEventListener ("keydown", event => {    // обработка ввода текста с физической клавиатуры
+        if (event.code.includes("Key")||event.code.includes("Backquote")||event.code.includes("Quote")||event.code.includes("Bracket")||event.code.includes("Semicolon")||event.code.includes("Comma")||event.code.includes("Period")||event.code.includes("Slash")||event.code.includes("Arrow")) {
+            event.preventDefault();     // для некоторых клавиш вводим preventDefault
+            let index;
+            for (let i=0; i < keyb.keyObj.length; i++) {
+                if (keyb.keyObj[i]["code"] == event.code) { // берём index из массива объектов для клавиш
+                    index = i;
+                    break;
+                }
+            }
+            insertText([...ALL_BUTTONS][index].innerHTML); // и вводим текст из текущего содержимого клавиши в html
+        }       
+    })
 
+    /*document.addEventListener ("keydown", (event) => {    // обработчик для анимации нажатия физических клавиш на виртуальной клавиатуре
+        try {                                             // будем ловить ошибки при попытке нажатия клавиши, не реализованной в виртуальной клавиатуре
+            let index;
+            for (let i = 0; i < keyb.keyObj.length; i ++) { // ищем по key code объект в массиве объектов для клавиш, из которого делали заполнение "значений" клавиш...
+                if (keyb.keyObj[i]["code"] == event.code) {
+                    index = i;                              // ...запоминаем индекс в массиве объектов...
+                    break;
+                }
+            }
+            ALL_BUTTONS[index].classList.add("pushed");         // ...и подсвечиваем нужную
+            ALL_BUTTONS[index].addEventListener("keyup", (event) => {
+                event.target.classList.remove("pushed");  // при keyup убираем подсветку
+            })
+        } catch (e) {
+            console.log("Добрый день! Похоже, что Вы попытались нажать клавишу, реализации которой нет в виртуальной клавиатуре :(");
+        }
+    });*/
+    
 }
