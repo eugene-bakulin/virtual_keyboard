@@ -86,7 +86,8 @@
     "wrappy": "^1.0.2"
   },
   "scripts": {
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "author": "Bakulin Eugene",
   "license": "ISC",
