@@ -710,14 +710,39 @@ LSHIFT.addEventListener('mousedown', () => { // вешаем слушатель 
       [...LETTER_BUTTONS].forEach((item, index) => {
         [...LETTER_BUTTONS][index].innerText = [...LETTER_BUTTONS][index].innerText.toLowerCase();
       });
+    } else if (langSwitch.lang === undefined) { // если язык еще не сохранен в storage
+      if (document.documentElement.lang === 'en') {
+        for (let i = 0; i < keyb.keyObj.length; i += 1) {
+          ALL_BUTTONS[i].innerHTML = keyb.keyObj[i].shifted_en;
+        }
+        [...LETTER_BUTTONS].forEach((item, index) => {
+          [...LETTER_BUTTONS][index].innerText = [...LETTER_BUTTONS][index].innerText.toLowerCase();
+        });
+      } else if (document.documentElement.lang === 'ru') {
+        for (let i = 0; i < keyb.keyObj.length; i += 1) {
+          ALL_BUTTONS[i].innerHTML = keyb.keyObj[i].shifted_ru;
+        }
+        [...LETTER_BUTTONS].forEach((item, index) => {
+          [...LETTER_BUTTONS][index].innerText = [...LETTER_BUTTONS][index].innerText.toLowerCase();
+        });
+      }
     }
     document.addEventListener('mouseup', () => { // вешаем слушатель событий на отпускание кнопки мыши
-      for (let i = 0; i < keyb.keyObj.length; i += 1) {
-        ALL_BUTTONS[i].innerHTML = keyb.keyObj[i][langSwitch.lang]; // при mouseup возращаем
-      } // символы с обычной нужной раскладки...
-      [...LETTER_BUTTONS].forEach((item, index) => { // и поднимаем их регистр обратно
-        [...LETTER_BUTTONS][index].innerText = [...LETTER_BUTTONS][index].innerText.toUpperCase();
-      });
+      if (langSwitch.lang === undefined) { // если язык еще не сохранен в storage
+        for (let i = 0; i < keyb.keyObj.length; i += 1) {
+          ALL_BUTTONS[i].innerHTML = keyb.keyObj[i][document.documentElement.lang];
+        }
+        [...LETTER_BUTTONS].forEach((item, index) => { // и поднимаем их регистр обратно
+          [...LETTER_BUTTONS][index].innerText = [...LETTER_BUTTONS][index].innerText.toUpperCase();
+        });
+      } else {
+        for (let i = 0; i < keyb.keyObj.length; i += 1) {
+          ALL_BUTTONS[i].innerHTML = keyb.keyObj[i][langSwitch.lang]; // при mouseup возращаем
+        } // символы с обычной нужной раскладки...
+        [...LETTER_BUTTONS].forEach((item, index) => { // и поднимаем их регистр обратно
+          [...LETTER_BUTTONS][index].innerText = [...LETTER_BUTTONS][index].innerText.toUpperCase();
+        });
+      }
     });
   } else if (capsLockIsOn === false) { // если caps выключен,
     if (langSwitch.lang === 'en') { // проверяем язык и заполняем клавиши shifted символами
@@ -728,42 +753,83 @@ LSHIFT.addEventListener('mousedown', () => { // вешаем слушатель 
       for (let i = 0; i < keyb.keyObj.length; i += 1) {
         ALL_BUTTONS[i].innerHTML = keyb.keyObj[i].shifted_ru;
       }
+    } else if (langSwitch.lang === undefined) { // если язык еще не сохранен в storage
+      if (document.documentElement.lang === 'en') {
+        for (let i = 0; i < keyb.keyObj.length; i += 1) {
+          ALL_BUTTONS[i].innerHTML = keyb.keyObj[i].shifted_en;
+        }
+      } else if (document.documentElement.lang === 'ru') {
+        for (let i = 0; i < keyb.keyObj.length; i += 1) {
+          ALL_BUTTONS[i].innerHTML = keyb.keyObj[i].shifted_ru;
+        }
+      }
     }
     document.addEventListener('mouseup', () => { // и вешаем слушатель: если кнопку мыши отпустили, то вернём в клавиши обычные символы из нужной раскладки
-      for (let i = 0; i < keyb.keyObj.length; i += 1) {
-        ALL_BUTTONS[i].innerHTML = keyb.keyObj[i][langSwitch.lang];
+      if (langSwitch.lang === undefined) {
+        for (let i = 0; i < keyb.keyObj.length; i += 1) {
+          ALL_BUTTONS[i].innerHTML = keyb.keyObj[i][document.documentElement.lang];
+        }
+      } else {
+        for (let i = 0; i < keyb.keyObj.length; i += 1) {
+          ALL_BUTTONS[i].innerHTML = keyb.keyObj[i][langSwitch.lang];
+        }
       }
     });
   }
 });
 
-RSHIFT.addEventListener('mousedown', () => { // вешаем слушатель событий на правый shift (все по аналогии с левым shift)
-  if (capsLockIsOn === true) {
-    if (langSwitch.lang === 'en') {
-      for (let i = 0; i < keyb.keyObj.length; i += 1) {
-        ALL_BUTTONS[i].innerHTML = keyb.keyObj[i].shifted_en;
+RSHIFT.addEventListener('mousedown', () => { // вешаем слушатель событий на правый shift
+  if (capsLockIsOn === true) { // проверяем, включен ли caps
+    if (langSwitch.lang === 'en') { // проверяем язык раскладки
+      for (let i = 0; i < keyb.keyObj.length; i += 1) { // заполняем клавиши shifted символами...
+        ALL_BUTTONS[i].innerHTML = keyb.keyObj[i].shifted_en; // с нужной раскладки
       }
-      [...LETTER_BUTTONS].forEach((item, index) => {
+      [...LETTER_BUTTONS].forEach((item, index) => { // и понижаем регистр у буквенных символов
         [...LETTER_BUTTONS][index].innerText = [...LETTER_BUTTONS][index].innerText.toLowerCase();
       });
-    } else if (langSwitch.lang === 'ru') {
+    } else if (langSwitch.lang === 'ru') { // то же для русской раскладки
       for (let i = 0; i < keyb.keyObj.length; i += 1) {
         ALL_BUTTONS[i].innerHTML = keyb.keyObj[i].shifted_ru;
       }
       [...LETTER_BUTTONS].forEach((item, index) => {
         [...LETTER_BUTTONS][index].innerText = [...LETTER_BUTTONS][index].innerText.toLowerCase();
       });
-    }
-    document.addEventListener('mouseup', () => {
-      for (let i = 0; i < keyb.keyObj.length; i += 1) {
-        ALL_BUTTONS[i].innerHTML = keyb.keyObj[i][langSwitch.lang];
+    } else if (langSwitch.lang === undefined) { // если язык еще не сохранен в storage
+      if (document.documentElement.lang === 'en') {
+        for (let i = 0; i < keyb.keyObj.length; i += 1) {
+          ALL_BUTTONS[i].innerHTML = keyb.keyObj[i].shifted_en;
+        }
+        [...LETTER_BUTTONS].forEach((item, index) => {
+          [...LETTER_BUTTONS][index].innerText = [...LETTER_BUTTONS][index].innerText.toLowerCase();
+        });
+      } else if (document.documentElement.lang === 'ru') {
+        for (let i = 0; i < keyb.keyObj.length; i += 1) {
+          ALL_BUTTONS[i].innerHTML = keyb.keyObj[i].shifted_ru;
+        }
+        [...LETTER_BUTTONS].forEach((item, index) => {
+          [...LETTER_BUTTONS][index].innerText = [...LETTER_BUTTONS][index].innerText.toLowerCase();
+        });
       }
-      [...LETTER_BUTTONS].forEach((item, index) => {
-        [...LETTER_BUTTONS][index].innerText = [...LETTER_BUTTONS][index].innerText.toUpperCase();
-      });
+    }
+    document.addEventListener('mouseup', () => { // вешаем слушатель событий на отпускание кнопки мыши
+      if (langSwitch.lang === undefined) { // если язык еще не сохранен в storage
+        for (let i = 0; i < keyb.keyObj.length; i += 1) {
+          ALL_BUTTONS[i].innerHTML = keyb.keyObj[i][document.documentElement.lang];
+        }
+        [...LETTER_BUTTONS].forEach((item, index) => { // и поднимаем их регистр обратно
+          [...LETTER_BUTTONS][index].innerText = [...LETTER_BUTTONS][index].innerText.toUpperCase();
+        });
+      } else {
+        for (let i = 0; i < keyb.keyObj.length; i += 1) {
+          ALL_BUTTONS[i].innerHTML = keyb.keyObj[i][langSwitch.lang]; // при mouseup возращаем
+        } // символы с обычной нужной раскладки...
+        [...LETTER_BUTTONS].forEach((item, index) => { // и поднимаем их регистр обратно
+          [...LETTER_BUTTONS][index].innerText = [...LETTER_BUTTONS][index].innerText.toUpperCase();
+        });
+      }
     });
-  } else if (capsLockIsOn === false) {
-    if (langSwitch.lang === 'en') {
+  } else if (capsLockIsOn === false) { // если caps выключен,
+    if (langSwitch.lang === 'en') { // проверяем язык и заполняем клавиши shifted символами
       for (let i = 0; i < keyb.keyObj.length; i += 1) {
         ALL_BUTTONS[i].innerHTML = keyb.keyObj[i].shifted_en;
       }
@@ -771,10 +837,26 @@ RSHIFT.addEventListener('mousedown', () => { // вешаем слушатель 
       for (let i = 0; i < keyb.keyObj.length; i += 1) {
         ALL_BUTTONS[i].innerHTML = keyb.keyObj[i].shifted_ru;
       }
+    } else if (langSwitch.lang === undefined) { // если язык еще не сохранен в storage
+      if (document.documentElement.lang === 'en') {
+        for (let i = 0; i < keyb.keyObj.length; i += 1) {
+          ALL_BUTTONS[i].innerHTML = keyb.keyObj[i].shifted_en;
+        }
+      } else if (document.documentElement.lang === 'ru') {
+        for (let i = 0; i < keyb.keyObj.length; i += 1) {
+          ALL_BUTTONS[i].innerHTML = keyb.keyObj[i].shifted_ru;
+        }
+      }
     }
-    document.addEventListener('mouseup', () => {
-      for (let i = 0; i < keyb.keyObj.length; i += 1) {
-        ALL_BUTTONS[i].innerHTML = keyb.keyObj[i][langSwitch.lang];
+    document.addEventListener('mouseup', () => { // и вешаем слушатель: если кнопку мыши отпустили, то вернём в клавиши обычные символы из нужной раскладки
+      if (langSwitch.lang === undefined) { // если язык еще не сохранен в storage
+        for (let i = 0; i < keyb.keyObj.length; i += 1) {
+          ALL_BUTTONS[i].innerHTML = keyb.keyObj[i][document.documentElement.lang];
+        }
+      } else {
+        for (let i = 0; i < keyb.keyObj.length; i += 1) {
+          ALL_BUTTONS[i].innerHTML = keyb.keyObj[i][langSwitch.lang];
+        }
       }
     });
   }
@@ -894,16 +976,44 @@ document.addEventListener('keydown', (event1) => { // вешаем на document
         [...LETTER_BUTTONS].forEach((item, index) => { // ...
           [...LETTER_BUTTONS][index].innerText = [...LETTER_BUTTONS][index].innerText.toLowerCase();
         });
+      } else if (langSwitch.lang === undefined) { // если язык еще не сохранен в storage
+        if (document.documentElement.lang === 'en') {
+          for (let i = 0; i < keyb.keyObj.length; i += 1) {
+            ALL_BUTTONS[i].innerHTML = keyb.keyObj[i].shifted_en;
+          }
+          [...LETTER_BUTTONS].forEach((item, index) => { // ...
+            const kostylForLint = [...LETTER_BUTTONS][index].innerText.toLowerCase();
+            [...LETTER_BUTTONS][index].innerText = kostylForLint;
+          });
+        } else if (document.documentElement.lang === 'ru') {
+          for (let i = 0; i < keyb.keyObj.length; i += 1) {
+            ALL_BUTTONS[i].innerHTML = keyb.keyObj[i].shifted_ru;
+          }
+          [...LETTER_BUTTONS].forEach((item, index) => { // ...
+            const kostylForLint = [...LETTER_BUTTONS][index].innerText.toLowerCase();
+            [...LETTER_BUTTONS][index].innerText = kostylForLint;
+          });
+        }
       }
       document.addEventListener('keyup', (event2) => { // добавляем слушатель событий на keyup
         if (event2.key === 'Shift') { // если отпустили shift
-          for (let i = 0; i < keyb.keyObj.length; i += 1) { // заполняем клавиши символами
-            ALL_BUTTONS[i].innerHTML = keyb.keyObj[i][langSwitch.lang]; // нужного языка...
+          if (langSwitch.lang === undefined) { // если язык еще не сохранен в storage
+            for (let i = 0; i < keyb.keyObj.length; i += 1) { // заполняем клавиши символами
+              ALL_BUTTONS[i].innerHTML = keyb.keyObj[i][document.documentElement.lang];
+            }
+            [...LETTER_BUTTONS].forEach((item, index) => { // и возвращаем caps (повышаем регистр)
+              const kostylForLint = [...LETTER_BUTTONS][index].innerText.toUpperCase();
+              [...LETTER_BUTTONS][index].innerText = kostylForLint;
+            });
+          } else {
+            for (let i = 0; i < keyb.keyObj.length; i += 1) { // заполняем клавиши символами
+              ALL_BUTTONS[i].innerHTML = keyb.keyObj[i][langSwitch.lang]; // нужного языка...
+            }
+            [...LETTER_BUTTONS].forEach((item, index) => { // и возвращаем caps (повышаем регистр)
+              const kostylForLint = [...LETTER_BUTTONS][index].innerText.toUpperCase();
+              [...LETTER_BUTTONS][index].innerText = kostylForLint;
+            });
           }
-          [...LETTER_BUTTONS].forEach((item, index) => { // ...и возвращаем caps (повышаем регистр)
-            const kostylForLint = [...LETTER_BUTTONS][index].innerText.toUpperCase();
-            [...LETTER_BUTTONS][index].innerText = kostylForLint;
-          });
         }
       });
     } else if (capsLockIsOn === false) { // если caps выключен
@@ -915,11 +1025,27 @@ document.addEventListener('keydown', (event1) => { // вешаем на document
         for (let i = 0; i < keyb.keyObj.length; i += 1) {
           ALL_BUTTONS[i].innerHTML = keyb.keyObj[i].shifted_ru;
         }
+      } else if (langSwitch.lang === undefined) { // если язык еще не сохранен в storage
+        if (document.documentElement.lang === 'en') {
+          for (let i = 0; i < keyb.keyObj.length; i += 1) {
+            ALL_BUTTONS[i].innerHTML = keyb.keyObj[i].shifted_en;
+          }
+        } else if (document.documentElement.lang === 'ru') {
+          for (let i = 0; i < keyb.keyObj.length; i += 1) {
+            ALL_BUTTONS[i].innerHTML = keyb.keyObj[i].shifted_ru;
+          }
+        }
       }
       document.addEventListener('keyup', (event3) => { // вешаем обработчик событий на keyup: отпустили shift - вернули обычные символы из раскладки нужного языка
         if (event3.key === 'Shift') {
-          for (let i = 0; i < keyb.keyObj.length; i += 1) {
-            ALL_BUTTONS[i].innerHTML = keyb.keyObj[i][langSwitch.lang];
+          if (langSwitch.lang === undefined) { // если язык еще не сохранен в storage
+            for (let i = 0; i < keyb.keyObj.length; i += 1) {
+              ALL_BUTTONS[i].innerHTML = keyb.keyObj[i][document.documentElement.lang];
+            }
+          } else {
+            for (let i = 0; i < keyb.keyObj.length; i += 1) {
+              ALL_BUTTONS[i].innerHTML = keyb.keyObj[i][langSwitch.lang];
+            }
           }
         }
       });
