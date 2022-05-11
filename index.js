@@ -1054,7 +1054,7 @@ document.addEventListener('keydown', (event1) => { // вешаем на document
 });
 
 document.addEventListener('keydown', (event) => { // обработка ввода текста с физической клавиатуры
-  if (event.code.includes('Key') || event.code.includes('Backquote') || event.code.includes('Quote') || event.code.includes('Bracket') || event.code.includes('Semicolon') || event.code.includes('Comma') || event.code.includes('Period') || event.code.includes('Slash') || event.code.includes('Arrow')) {
+  if (event.code.includes('Key') || event.code.includes('Backquote') || event.code.includes('Quote') || event.code.includes('Bracket') || event.code.includes('Semicolon') || event.code.includes('Comma') || event.code.includes('Period') || event.code.includes('Slash') || event.code.includes('Arrow') || event.code.includes('Backslash')) {
     event.preventDefault(); // для некоторых клавиш вводим preventDefault
     let index;
     for (let i = 0; i < keyb.keyObj.length; i += 1) {
