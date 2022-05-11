@@ -1063,6 +1063,6 @@ document.addEventListener('keydown', (event) => { // обработка ввод
         break;
       }
     }
-    insertText([...ALL_BUTTONS][index].innerHTML); // и вводим текст из текущего содержимого клавиш
+    insertText([...ALL_BUTTONS][index].innerText); // и вводим текст из текущего содержимого клавиш
   }
 });
